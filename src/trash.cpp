@@ -13,6 +13,10 @@
 #include "DeviceIDs.h"
 //required
 using namespace std;
+using namespace ctre::phoenix;
+using namespace ctre::phoenix::platform;
+using namespace ctre::phoenix::motorcontrol;
+using namespace ctre::phoenix::motorcontrol::can;
 
 #define DRIVE_SCALE 1
 

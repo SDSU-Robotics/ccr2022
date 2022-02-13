@@ -1,3 +1,25 @@
+//general includes needed for ROS files
+#include <string>
+#include <unistd.h>
+
+#include "ros/ros.h"
+#include "std_msgs/Float32.h"
+#include <sensor_msgs/Joy.h>
+#include "std_msgs/Bool.h"
+//include to access JoyMap.h file wich stores all the button mapping for Joystick
+#include "JoyMap.h"
+#include "DeviceIDs.h"
+
+#include "ctre/Phoenix.h"
+#include "ctre/phoenix/platform/Platform.h"
+#include "ctre/phoenix/unmanaged/Unmanaged.h"
+#include "ctre/phoenix/motorcontrol/SensorCollection.h"
+using namespace std;
+using namespace ctre::phoenix;
+using namespace ctre::phoenix::platform;
+using namespace ctre::phoenix::motorcontrol;
+using namespace ctre::phoenix::motorcontrol::can;
+
 void joyListener(const sensor_msgs::Joy::ConstPtr& Joy)
 {
 	for (int i = 0 ; i < 12; i++)

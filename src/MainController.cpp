@@ -4,16 +4,25 @@
 
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
-#include "std_msgs/Int32.h"
-#include "std_msgs/UInt16.h"
 #include <sensor_msgs/Joy.h>
 #include "std_msgs/Bool.h"
+
+#include "ctre/Phoenix.h"
+#include "ctre/phoenix/platform/Platform.h"
+#include "ctre/phoenix/unmanaged/Unmanaged.h"
+#include "ctre/phoenix/motorcontrol/SensorCollection.h"
+
 //include to access JoyMap.h file wich stores all the button mapping for Joystick
 #include "JoyMap.h"
 #include "DeviceIDs.h"
 #include "ControllerFunctions.h"
 //required
 using namespace std;
+using namespace ctre::phoenix;
+using namespace ctre::phoenix::platform;
+using namespace ctre::phoenix::motorcontrol;
+using namespace ctre::phoenix::motorcontrol::can;
+
 
 TalonSRX Left = {DeviceIDs::LeftMotorTal};
 TalonSRX Right = {DeviceIDs::RightMotorTal};
@@ -72,8 +81,8 @@ int main (int argc, char **argv)
 		power.publish(power_msg);
 
 		F32Toggle(buttons[weaponmotor], weaponcurrent, weaponon, w_motor_msg);
-        AxisPressandHold (axes[leftmotor], Left, l_motor_msg, lpress);
-		AxisPressandHold (axes[rightmotor], Right, r_motor_msg, rpress);
+        AxisPressandHold(axes[leftmotor], Left, l_motor_msg, lpress);
+		AxisPressandHold(axes[rightmotor], Right, r_motor_msg, rpress);
         
 		//required for ROS to work
 		ros::spinOnce();
