@@ -26,6 +26,7 @@ using namespace ctre::phoenix::motorcontrol::can;
 #define minSpeed 0
 #define maxSpeed 1
 #define stepSize 0.1
+#define SPEED_SCALE 0.25
 
 bool _buttons[12] = { 0 };
 double _axes[6] = { 0 };
@@ -231,7 +232,7 @@ void AxisPressandHold(double axis, std_msgs::Float32 &msg, bool pressed)
     }
     else
     {
-        msg.data = axis * 0.25;
+        msg.data = axis * SPEED_SCALE;
         pressed = false;
     }
 
