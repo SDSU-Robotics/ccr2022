@@ -231,7 +231,7 @@ void AxisPressandHold(double axis, std_msgs::Float32 &msg, bool pressed)
     }
     else
     {
-        msg.data = axis;
+        msg.data = axis * 0.25;
         pressed = false;
     }
 
