@@ -1,4 +1,4 @@
-//general includes needed for ROS files
+/*//general includes needed for ROS files
 #include <string>
 #include <unistd.h>
 
@@ -9,6 +9,7 @@
 //include to access JoyMap.h file wich stores all the button mapping for Joystick
 #include "JoyMap.h"
 #include "DeviceIDs.h"
+#include "ControllerFunctions.h"
 
 #include "ctre/Phoenix.h"
 #include "ctre/phoenix/platform/Platform.h"
@@ -37,7 +38,7 @@ void joyListener(const sensor_msgs::Joy::ConstPtr& Joy)
     REQUIRED IN WHILE(ROS::OK) LOOP!
     getJoyVals(buttons, axes);
 */
-void getJoyVals(bool buttons[], double axes[]) const
+/*void getJoyVals(bool buttons[], double axes[]) const
 {
     for (int i = 0; i < 12; i++)
         buttons[i] = _buttons[i];
@@ -56,7 +57,7 @@ void getJoyVals(bool buttons[], double axes[]) const
     while(ros::ok) loop requirments:
     F32Toggle(buttons[{JoyMap::<button_name>}], current, on, msg);
 */
-void F32Toggle(const bool b, bool &current, bool &on, std_msgs::Float32 &msg)
+/*void F32Toggle(const bool b, bool &current, bool &on, std_msgs::Float32 &msg)
 {
 	bool prev = current;
 	current = b;
@@ -115,38 +116,38 @@ void ToggleUpDown(const bool down, const bool up, bool &currentButton4, bool &cu
 
 
 
-void ButtonPressAndHold(TalonSRX Talon, bool cw, bool pressed)
+void ButtonPressAndHold(bool button, bool pressed, std_msgs::Float32 msg)
 {
-    if(cw)
+    if(button)
         pressed = true;
     
     if (!pressed)
     {
-        Talon.Set(ControlMode::PercentOutput, 0);
+        msg.data = 0;
     }
-    else if(pressed && cw)
+    else if(pressed && button)
     {
-        Talon.Set(ControlMode::PercentOutput, 1);
+        msg.data = 1;
         pressed = false;
     }
 
     ctre::phoenix::unmanaged::FeedEnable(100);
 }
 
-void AxisPressandHold(bool axis, TalonSRX Talon, std_msgs::Float32 msg, bool pressed)
+void AxisPressandHold(bool axis, std_msgs::Float32 msg, bool pressed)
 {
     if(axis)
         pressed = true;
     
     if (!pressed)
     {
-        Talon.Set(ControlMode::PercentOutput, 0);
+        msg.data = 0;
     }
     else if(pressed && axis)
     {
-        Talon.Set(ControlMode::PercentOutput, msg.data);
+        msg.data = axis;
         pressed = false;
     }
 
     ctre::phoenix::unmanaged::FeedEnable(100);
-}
+}*/
