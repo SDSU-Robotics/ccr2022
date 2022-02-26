@@ -15,7 +15,7 @@
 //include to access JoyMap.h file wich stores all the button mapping for Joystick
 #include "JoyMap.h"
 #include "DeviceIDs.h"
-//#include "ControllerFunctions.h"
+
 //required
 using namespace std;
 using namespace ctre::phoenix;
@@ -34,18 +34,19 @@ void getJoyVals(bool buttons[], double axes[]);
 
 void F32Toggle(const bool b, bool &current, bool &on, std_msgs::Float32 &msg);
 void ToggleUpDown(const bool down, const bool up, bool &currentButton4, bool &currentButton5, std_msgs::Float32 &message);
-void ButtonPressAndHold(bool button, bool pressed, std_msgs::Float32 msg);
-void AxisPressandHold(bool axis, std_msgs::Float32 msg, bool pressed);
+void ButtonPressAndHold(bool button, std_msgs::Float32 &msg, bool pressed);
+void AxisPressandHold(double axis, std_msgs::Float32 &msg, bool pressed);
+void Shutdown(const bool b, bool &current, bool &off, std_msgs::Float32 &lmsg, std_msgs::Float32 &rmsg, std_msgs::Float32 &wmsg);
 
-TalonSRX Left = {DeviceIDs::LeftMotorTal};
+/*TalonSRX Left = {DeviceIDs::LeftMotorTal};
 TalonSRX Right = {DeviceIDs::RightMotorTal};
-TalonSRX Weapon = {DeviceIDs::WeaponTal};
+TalonSRX Weapon = {DeviceIDs::WeaponTal};*/
 
 //function needed by all .cpp files
 int main (int argc, char **argv)
 {
 	//required for ROS to work. The name inside the quotations is the name of this node. Cannot be the same as other node names
-    ros::init(argc, argv, "MainController");
+    ros::init(argc, argv, "MainController", ros::init_options::AnonymousName);
 	ros::NodeHandle n;
 	ros::Rate loop_rate(100);
 
@@ -79,6 +80,9 @@ int main (int argc, char **argv)
 
 	bool weaponcurrent = false;
 	bool weaponon = false;
+
+	bool powercurrent = false;
+	bool poweron = false;
     
 	//required for ROS to work
 	while (ros::ok())
@@ -86,16 +90,16 @@ int main (int argc, char **argv)
         // fill array (2) with values from array (1)
 		getJoyVals(buttons, axes);
 
+		F32Toggle(buttons[weaponmotor], weaponcurrent, weaponon, w_motor_msg);
+        AxisPressandHold(axes[leftmotor], l_motor_msg, lpress);
+		AxisPressandHold(axes[rightmotor], r_motor_msg, rpress);
+		Shutdown(buttons[poweroff], powercurrent, poweron, l_motor_msg, r_motor_msg, w_motor_msg);
 
 		// publish speed data
 		l_motor.publish(l_motor_msg);
 		r_motor.publish(r_motor_msg);
 		w_motor.publish(w_motor_msg);
 		power.publish(power_msg);
-
-		F32Toggle(buttons[weaponmotor], weaponcurrent, weaponon, w_motor_msg);
-        AxisPressandHold(axes[leftmotor], l_motor_msg, lpress);
-		AxisPressandHold(axes[rightmotor], r_motor_msg, rpress);
         
 		//required for ROS to work
 		ros::spinOnce();
@@ -149,17 +153,17 @@ void F32Toggle(const bool b, bool &current, bool &on, std_msgs::Float32 &msg)
 	if (prev && !current)
 	{
 		on = !on;
-		ROS_INFO("PRESSED");
+		//ROS_INFO("PRESSED");
 	}
 		
 	if (on)
 	{
-		ROS_INFO("ON");
+		//ROS_INFO("ON");
 		msg.data = 1;
 	}
 	else
 	{
-		ROS_INFO("OFF");
+		//ROS_INFO("OFF");
 		msg.data = 0;
 	}
 }
@@ -198,9 +202,7 @@ void ToggleUpDown(const bool down, const bool up, bool &currentButton4, bool &cu
 	}
 } 
 
-
-
-void ButtonPressAndHold(bool button, bool pressed, std_msgs::Float32 msg)
+void ButtonPressAndHold(bool button, std_msgs::Float32 &msg, bool pressed)
 {
     if(button)
         pressed = true;
@@ -214,24 +216,45 @@ void ButtonPressAndHold(bool button, bool pressed, std_msgs::Float32 msg)
         msg.data = 1;
         pressed = false;
     }
-
-    ctre::phoenix::unmanaged::FeedEnable(100);
 }
 
-void AxisPressandHold(bool axis, std_msgs::Float32 msg, bool pressed)
+void AxisPressandHold(double axis, std_msgs::Float32 &msg, bool pressed)
 {
-    if(axis)
+    if(axis != 0)
         pressed = true;
-    
-    if (!pressed)
+    else
+		pressed = false;
+	
+	if(!pressed)
     {
         msg.data = 0;
     }
-    else if(pressed && axis)
+    else
     {
         msg.data = axis;
         pressed = false;
     }
 
-    ctre::phoenix::unmanaged::FeedEnable(100);
+	//ROS_INFO("Axis: %f", axis);
+	//ROS_INFO("Pressed: %d", pressed);
+}
+
+void Shutdown(const bool b, bool &current, bool &off, std_msgs::Float32 &lmsg, std_msgs::Float32 &rmsg, std_msgs::Float32 &wmsg)
+{
+	bool prev = current;
+	current = b;
+
+	if (prev && !current)
+	{
+		off = !off;
+		//ROS_INFO("PRESSED");
+	}
+		
+	if (off)
+	{
+		//ROS_INFO("ON");
+		lmsg.data = 0;
+		rmsg.data = 0;
+		wmsg.data = 0;
+	}
 }

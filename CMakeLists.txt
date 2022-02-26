@@ -43,3 +43,11 @@ target_link_libraries(MainController ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_Ph
 target_link_libraries(MainController ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCCI.a)
 target_link_libraries(MainController ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCan.a)
 target_link_libraries(MainController ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCanutils.a)
+
+add_executable(MainDrive ${PROJECT_SOURCE_DIR}/src/MainDrive.cpp)
+target_link_libraries(MainDrive ${catkin_LIBRARIES} Threads::Threads)
+
+target_link_libraries(MainDrive ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_Phoenix.a)
+target_link_libraries(MainDrive ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCCI.a)
+target_link_libraries(MainDrive ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixPlatformLinuxSocketCan.a)
+target_link_libraries(MainDrive ${PROJECT_SOURCE_DIR}/lib/x86-64/libCTRE_PhoenixCanutils.a)

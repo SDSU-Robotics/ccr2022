@@ -9,7 +9,7 @@ namespace JoyMap
         - check the comment block below for the right number 
     */
     
-    static const int PowerOff = 1; // B
+    static const int PowerOff = 8; // Power/Xbox button
     static const int Weapon = 0;   // A
 
     static const int LeftMotor = 1;  // Up/Down Axis stick left
